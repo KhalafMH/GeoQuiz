@@ -14,8 +14,8 @@
         android:id="@+id/questionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/textview_question"
-        android:padding="24dp" />
+        android:padding="24dp"
+        android:text="@string/question_text_view" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,21 +43,17 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:id="@+id/prevButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_navigate_before_black_24dp"
-            android:drawableStart="@drawable/ic_navigate_before_black_24dp"
-            android:text="@string/button_prev" />
+            android:src="@drawable/ic_navigate_before_black_24dp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/nextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_navigate_next_black_24dp"
-            android:drawableRight="@drawable/ic_navigate_next_black_24dp"
-            android:text="@string/button_next" />
+            android:src="@drawable/ic_navigate_next_black_24dp" />
     </LinearLayout>
 
 
