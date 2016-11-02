@@ -6,4 +6,6 @@
     <string name="button_next">Next</string>
     <string name="wrong_toast">wrong answer</string>
     <string name="correct_toast">correct</string>
+    <string name="button_prev">Prev</string>
+    <string name="textview_question">placeholder text</string>
 </resources>
