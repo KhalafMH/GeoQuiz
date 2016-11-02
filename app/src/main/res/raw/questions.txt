@@ -1,0 +1,5 @@
+true The Pacific Ocean is larger than the Atlantic Ocean.
+false The Suez Canal connects the Red Sea and the Indian Ocean.
+false The source of the Nile River is in Egypt.
+true The Amazon River is the longest river in the Americas.
+true Lake Baikal is the world's oldest and deepest freshwater lake.
