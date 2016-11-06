@@ -5,5 +5,4 @@
     <string name="button_true">True</string>
     <string name="wrong_toast">wrong answer</string>
     <string name="correct_toast">correct</string>
-    <string name="question_text_view">placeholder text</string>
 </resources>

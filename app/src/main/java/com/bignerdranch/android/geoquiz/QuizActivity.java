@@ -23,7 +23,12 @@ import java.util.Scanner;
 
 public class QuizActivity extends AppCompatActivity {
     private static final String TAG = QuizActivity.class.getSimpleName();
-    private int mCurrentQuestion = 0;
+    private static final String KEY_CURRENT_QUESTION = "current_question";
+
+    // state fields
+    private int mCurrentQuestion;
+
+    // reference fields
     private Question[] mQuestions;
     private Button mTrueButton;
     private Button mFalseButton;
@@ -57,13 +62,17 @@ public class QuizActivity extends AppCompatActivity {
             this.finish();
         }
 
-
         mTrueButton = (Button) findViewById(R.id.trueButton);
         mFalseButton = (Button) findViewById(R.id.falseButton);
         mNextButton = (ImageButton) findViewById(R.id.nextButton);
         mPrevButton = (ImageButton) findViewById(R.id.prevButton);
         mQuestionTextView = (TextView) findViewById(R.id.questionTextView);
 
+        if (savedInstanceState != null) {
+            mCurrentQuestion = savedInstanceState.getInt(KEY_CURRENT_QUESTION, 0);
+        } else {
+            mCurrentQuestion = 0;
+        }
         updateQuestion();
 
         mTrueButton.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +112,13 @@ public class QuizActivity extends AppCompatActivity {
                 mNextButton.callOnClick();
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(KEY_CURRENT_QUESTION, mCurrentQuestion);
     }
 
     @Override
