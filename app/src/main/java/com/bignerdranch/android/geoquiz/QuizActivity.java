@@ -26,11 +26,13 @@ public class QuizActivity extends AppCompatActivity {
     private static final String TAG = QuizActivity.class.getSimpleName();
     private static final String KEY_CURRENT_QUESTION = "current_question";
     private static final String KEY_IS_CHEATER = "is_cheater";
+    private static final String KEY_CHEAT_STATE_ARRAY = "cheat_state_array";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     // state fields
     private int mCurrentQuestion;
-    private boolean mIsCheater;
+    private boolean mUserCheated;
+    private boolean[] mCheatStateArray;
 
     // reference fields
     private Question[] mQuestions;
@@ -64,7 +66,7 @@ public class QuizActivity extends AppCompatActivity {
             mQuestions = getQuestions();
         } catch (FileNotFoundException e) {
             Log.d(TAG, "questions could not be read", e);
-            this.finish();
+            finish();
         }
 
         mTrueButton = (Button) findViewById(R.id.trueButton);
@@ -76,10 +78,17 @@ public class QuizActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mCurrentQuestion = savedInstanceState.getInt(KEY_CURRENT_QUESTION, 0);
-            mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
+            mUserCheated = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
+            if (mUserCheated) {
+                mCheatStateArray = savedInstanceState.getBooleanArray(KEY_CHEAT_STATE_ARRAY);
+            }
+            else {
+                mCheatStateArray = new boolean[mQuestions.length];
+            }
         } else {
             mCurrentQuestion = 0;
-            mIsCheater = false;
+            mUserCheated = false;
+            mCheatStateArray = new boolean[mQuestions.length];
         }
         updateQuestion();
 
@@ -102,7 +111,6 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mCurrentQuestion = (mCurrentQuestion + 1) % mQuestions.length;
                 updateQuestion();
-                mIsCheater = false;
             }
         });
 
@@ -112,7 +120,6 @@ public class QuizActivity extends AppCompatActivity {
                 mCurrentQuestion--;
                 mCurrentQuestion = mCurrentQuestion < 0 ? mQuestions.length - 1 : mCurrentQuestion;
                 updateQuestion();
-                mIsCheater = false;
             }
         });
 
@@ -141,7 +148,10 @@ public class QuizActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_CODE_CHEAT:
                 if (resultCode == RESULT_OK && data != null) {
-                    mIsCheater = CheatActivity.didUserCheat(data);
+                    if (CheatActivity.didUserCheat(data)) {
+                        mUserCheated = true;
+                        mCheatStateArray[mCurrentQuestion] = true;
+                    }
                 }
         }
     }
@@ -151,7 +161,10 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         outState.putInt(KEY_CURRENT_QUESTION, mCurrentQuestion);
-        outState.putBoolean(KEY_IS_CHEATER, mIsCheater);
+        outState.putBoolean(KEY_IS_CHEATER, mUserCheated);
+        if (mUserCheated) {
+            outState.putBooleanArray(KEY_CHEAT_STATE_ARRAY, mCheatStateArray);
+        }
     }
 
     @Override
@@ -185,8 +198,10 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean answerTrue) {
-        int answer = answerTrue == mQuestions[mCurrentQuestion].isAnswerTrue() ? R.string.correct_toast : R.string.wrong_toast;
-        if (mIsCheater) {
+        int answer = answerTrue == mQuestions[mCurrentQuestion].isAnswerTrue()
+                ? R.string.correct_toast
+                : R.string.wrong_toast;
+        if (mCheatStateArray[mCurrentQuestion]) {
             answer = R.string.cheater_toast;
         }
         Toast.makeText(QuizActivity.this, answer, Toast.LENGTH_SHORT).show();
